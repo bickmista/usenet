@@ -7,6 +7,7 @@ services:
     container_name: plex
     volumes:
       - /srv/config/plex:/config
+      - /srv/transcode:/transcode
       - /srv/media:/data
     environment:
       - TZ=Europe/London
