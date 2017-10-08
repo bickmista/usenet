@@ -1,0 +1,95 @@
+version: '3.3'
+services:
+
+  # plex media server
+  plex:
+    image: plexinc/pms-docker:plexpass
+    container_name: plexmediaserver
+    volumes:
+      - /srv/config/plex:/config
+      - /srv/media:/data
+    networks:
+      - notifier
+      - plex
+    ports:
+      - 32400:32400
+    restart: always
+
+  # plexpy
+  plexpy:
+    image: linuxserver/plexpy
+    container_name: plexpy
+    volumes:
+      - /srv/config/plexpy:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/config/plex/Library/Application Support/Plex Media Server/Logs:/logs:ro
+    networks:
+      - plex
+    ports:
+      - 8081:8181
+    restart: always
+
+  # ombi
+  ombi:
+    image: linuxserver/ombi
+    container_name: ombi
+    volumes:
+      - /srv/config/ombi:/config
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - downloaders
+      - plex
+    ports:
+      - 8082:3579
+    restart: always
+
+  # nzbget
+  nzbget:
+    image: linuxserver/nzbget
+    container_name: nzbget
+    volumes:
+      - /srv/config/nzbget:/config
+      - /srv/downloads/complete:/complete
+      - /srv/downloads:/downloads
+    networks:
+      - downloaders
+    ports:
+      - 8083:6789
+    restart: always
+
+  # sonarr
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    volumes:
+      - /srv/config/sonarr:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/media/tv:/tv
+      - /srv/downloads/complete:/downloads
+    networks:
+      - downloaders
+      - notifier
+    ports:
+      - 8084:8989
+    restart: always
+
+  # radarr
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    volumes:
+      - /srv/config/radarr:/config
+      - /srv/media/movies:/movies
+      - /srv/downloads/complete:/downloads
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - downloaders
+      - notifier
+    ports:
+      - 8085:7878
+    restart: always
+
+networks:
+  downloaders:
+  notifier:
+  plex:
