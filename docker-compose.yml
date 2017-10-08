@@ -4,16 +4,27 @@ services:
   # plex media server
   plex:
     image: plexinc/pms-docker:plexpass
-    container_name: plexmediaserver
+    container_name: plex
     volumes:
       - /srv/config/plex:/config
       - /srv/media:/data
+    environment:
+      - TZ=Europe/London
     networks:
       - notifier
       - plex
     ports:
-      - 32400:32400
-    restart: always
+      - 1900:1900/udp
+      - 3005:3005/tcp
+      - 8324:8324/tcp
+      - 32400:32400/tcp
+      - 32401:32401
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+      - 32469:32469
+    restart: unless-stopped
 
   # plexpy
   plexpy:
@@ -23,11 +34,14 @@ services:
       - /srv/config/plexpy:/config
       - /etc/localtime:/etc/localtime:ro
       - /srv/config/plex/Library/Application Support/Plex Media Server/Logs:/logs:ro
+    environment:
+      - PUID=1000
+      - PGID=1000
     networks:
       - plex
     ports:
       - 8081:8181
-    restart: always
+    restart: unless-stopped
 
   # ombi
   ombi:
@@ -36,12 +50,15 @@ services:
     volumes:
       - /srv/config/ombi:/config
       - /etc/localtime:/etc/localtime:ro
+    environment:
+      - PUID=1000
+      - PGID=1000
     networks:
       - downloaders
       - plex
     ports:
       - 8082:3579
-    restart: always
+    restart: unless-stopped
 
   # nzbget
   nzbget:
@@ -51,11 +68,14 @@ services:
       - /srv/config/nzbget:/config
       - /srv/downloads/complete:/complete
       - /srv/downloads:/downloads
+    environment:
+      - PUID=1000
+      - PGID=1000
     networks:
       - downloaders
     ports:
       - 8083:6789
-    restart: always
+    restart: unless-stopped
 
   # sonarr
   sonarr:
@@ -65,13 +85,16 @@ services:
       - /srv/config/sonarr:/config
       - /etc/localtime:/etc/localtime:ro
       - /srv/media/tv:/tv
-      - /srv/downloads/complete:/downloads
+      - /srv/downloads/complete:/complete
+    environment:
+      - PUID=1000
+      - PGID=1000
     networks:
       - downloaders
       - notifier
     ports:
       - 8084:8989
-    restart: always
+    restart: unless-stopped
 
   # radarr
   radarr:
@@ -80,14 +103,27 @@ services:
     volumes:
       - /srv/config/radarr:/config
       - /srv/media/movies:/movies
-      - /srv/downloads/complete:/downloads
+      - /srv/downloads/complete:/complete
       - /etc/localtime:/etc/localtime:ro
+    environment:
+      - PUID=1000
+      - PGID=1000
     networks:
       - downloaders
       - notifier
     ports:
       - 8085:7878
-    restart: always
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /srv/config/portainer:/data
+    ports:
+      - 8080:9000
+    restart: unless-stopped
 
 networks:
   downloaders:
