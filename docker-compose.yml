@@ -11,7 +11,7 @@ services:
       - /srv/media:/data
     environment:
       - TZ=Europe/London
-    network-type: host
+    network_mode: host
     restart: unless-stopped
 
   # plexpy
