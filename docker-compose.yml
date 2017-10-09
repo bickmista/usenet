@@ -70,7 +70,7 @@ services:
       - /srv/config/sonarr:/config
       - /etc/localtime:/etc/localtime:ro
       - /srv/media/tv:/tv
-      - /srv/downloads/complete:/complete
+      - /srv/downloads:/downloads
     environment:
       - PUID=1000
       - PGID=1000
@@ -88,7 +88,7 @@ services:
     volumes:
       - /srv/config/radarr:/config
       - /srv/media/movies:/movies
-      - /srv/downloads/complete:/complete
+      - /srv/downloads:/downloads
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=1000
