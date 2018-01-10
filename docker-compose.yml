@@ -116,6 +116,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /srv/config/watchtower.json:/config.json
     command: --cleanup
+    restart: unless-stopped
 
 networks:
   downloaders:
