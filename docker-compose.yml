@@ -114,7 +114,6 @@ services:
     image: v2tec/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /srv/config/watchtower.json:/config.json
     command: --cleanup
     restart: unless-stopped
 
