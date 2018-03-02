@@ -9,10 +9,11 @@ services:
       - /srv/config/plex:/config
       - /srv/transcode:/transcode
       - /srv/media:/data
-      - /dev/dri:/dev/dri
     environment:
       - TZ=Europe/London
     network_mode: host
+    devices:
+      - /dev/dri:/dev/dri
     restart: unless-stopped
 
   # plexpy
