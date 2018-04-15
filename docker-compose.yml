@@ -1,6 +1,36 @@
 version: '2.3'
 
 services:
+  # traefik
+  traefik:
+    image: traefik:latest
+    command: --web --docker --docker.watch --docker.domain=${DOMAIN} --docker.exposedbydefault=false --acme.domains=${DOMAIN}
+    container_name: traefik
+    hostname: traefik
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${CONFIG}/traefik/acme.json:/acme.json
+      - ${CONFIG}/traefik/traefik.toml:/etc/traefik/traefik.toml
+      - ${CONFIG}/traefik/.htpasswd:/etc/traefik/.htpasswd:ro
+    labels:
+      traefik.enable: "true"
+      traefik.frontend.rule: "Host:monitor.${DOMAIN}"
+      traefik.port: "8080"
+      com.centurylinklabs.watchtower.enable: "true"
+  
+  # ddclient
+  ddclient:
+    image: linuxserver/ddclient
+    container_name: ddclient
+    volumes:
+      - ${CONFIG}/ddclient:/config
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    restart: unless-stopped
+
   # plex media server
   plex:
     image: plexinc/pms-docker:plexpass
@@ -75,19 +105,29 @@ services:
   sonarr:
     image: linuxserver/sonarr
     container_name: sonarr
+    hostname: sonarr
     volumes:
       - /srv/config/sonarr:/config
       - /etc/localtime:/etc/localtime:ro
       - /srv/media/tv:/tv
+      - /srv/media/kids:/kids
+      - /srv/media/anime:/anime
       - /srv/downloads:/downloads
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PGID
+      - PUID
+      - TZ
     networks:
       - downloaders
     ports:
       - 8084:8989
     cpus: 0.5
+    labels:
+      traefik.enable: "true"
+      traefik.port: "8989"
+      traefik.frontend.rule: "Host:sonarr.${DOMAIN}"
+      com.centurylinklabs.watchtower.enable: "true"
+
     restart: unless-stopped
 
   # radarr
@@ -121,9 +161,12 @@ services:
 
   watchtower:
     image: v2tec/watchtower
+    container_name: watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --cleanup
+    command: --cleanup --label-enable --schedule="0 2 * * *"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
     restart: unless-stopped
 
 networks:
