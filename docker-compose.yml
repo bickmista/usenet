@@ -51,17 +51,24 @@ services:
   nzbget:
     image: linuxserver/nzbget
     container_name: nzbget
+    hostname: nzbget
     volumes:
       - /srv/config/nzbget:/config
       - /srv/downloads/complete:/complete
       - /srv/downloads:/downloads
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PGID
+      - PUID
+      - TZ
     networks:
       - downloaders
     ports:
       - 8083:6789
+    labels:
+      traefik.enable: "true"
+      traefik.port: "6789"
+      traefik.frontend.rule: "Host:nzbget.${DOMAIN}"
+      com.centurylinklabs.watchtower.enable: "true"
     restart: unless-stopped
 
   # sonarr
