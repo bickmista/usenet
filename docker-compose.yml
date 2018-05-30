@@ -16,10 +16,10 @@ services:
       - /dev/dri:/dev/dri
     restart: unless-stopped
 
-  # plexpy
-  plexpy:
-    image: linuxserver/plexpy
-    container_name: plexpy
+  # tautulli
+  tautulli:
+    image: linuxserver/tautulli
+    container_name: tautulli
     volumes:
       - /srv/config/plexpy:/config
       - /etc/localtime:/etc/localtime:ro
