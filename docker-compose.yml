@@ -103,7 +103,7 @@ services:
     restart: unless-stopped
 
   hydra:
-    image: linuxserver/docker-hydra2
+    image: linuxserver/hydra2
     container_name: hydra
     volumes:
       - /srv/config/hydra:/config
