@@ -64,6 +64,26 @@ services:
       - 8083:6789
     restart: unless-stopped
 
+  hydra:
+    image: linuxserver/hydra2
+    container_name: hydra
+    volumes:
+      - /srv/config/hydra:/config
+    ports:
+      - 8084:5076
+    restart: unless-stopped
+    
+  bazarr:
+    image: morpheus65535/bazarr
+    container_name: bazarr
+    volumes:
+      - /srv/media/tv:/tv
+      - /srv/media/movies:/movies
+      - /srv/config/bazarr:/bazarr/data
+    ports:
+      - 8085:6767
+    restart: unless-stopped
+
   # sonarr
   sonarr:
     image: linuxserver/sonarr
@@ -79,7 +99,7 @@ services:
     networks:
       - downloaders
     ports:
-      - 8085:8989
+      - 8086:8989
     cpus: 0.5
     restart: unless-stopped
 
@@ -98,19 +118,9 @@ services:
     networks:
       - downloaders
     ports:
-      - 8086:7878
+      - 8087:7878
     cpus: 0.5
     restart: unless-stopped
-
-  hydra:
-    image: linuxserver/hydra2
-    container_name: hydra
-    volumes:
-      - /srv/config/hydra:/config
-    ports:
-      - 8084:5076
-    restart: unless-stopped
-    
 
   portainer:
     image: portainer/portainer
