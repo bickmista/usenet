@@ -79,7 +79,7 @@ services:
     networks:
       - downloaders
     ports:
-      - 8084:8989
+      - 8085:8989
     cpus: 0.5
     restart: unless-stopped
 
@@ -98,7 +98,7 @@ services:
     networks:
       - downloaders
     ports:
-      - 8085:7878
+      - 8086:7878
     cpus: 0.5
     restart: unless-stopped
 
@@ -107,6 +107,8 @@ services:
     container_name: hydra
     volumes:
       - /srv/config/hydra:/config
+    ports:
+      - 8084:5076
     restart: unless-stopped
     
 
