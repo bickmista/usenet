@@ -102,6 +102,14 @@ services:
     cpus: 0.5
     restart: unless-stopped
 
+  hydra:
+    image: linuxserver/docker-hydra2
+    container_name: hydra
+    volumes:
+      - /srv/config/hydra:/config
+    restart: unless-stopped
+    
+
   portainer:
     image: portainer/portainer
     container_name: portainer
