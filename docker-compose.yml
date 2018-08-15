@@ -71,6 +71,8 @@ services:
       - /srv/config/hydra:/config
     ports:
       - 8084:5076
+    networks:
+      - downloaders
     restart: unless-stopped
     
   bazarr:
@@ -80,6 +82,8 @@ services:
       - /srv/media/tv:/tv
       - /srv/media/movies:/movies
       - /srv/config/bazarr:/bazarr/data
+    networks:
+      - downloaders
     ports:
       - 8085:6767
     restart: unless-stopped
