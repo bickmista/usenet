@@ -1,4 +1,4 @@
-version: '2.3'
+version: "2.3"
 
 services:
   # plex media server
@@ -73,19 +73,6 @@ services:
       - 8084:5076
     networks:
       - downloaders
-    restart: unless-stopped
-    
-  bazarr:
-    image: morpheus65535/bazarr
-    container_name: bazarr
-    volumes:
-      - /srv/media/tv:/tv
-      - /srv/media/movies:/movies
-      - /srv/config/bazarr:/bazarr/data
-    networks:
-      - downloaders
-    ports:
-      - 8085:6767
     restart: unless-stopped
 
   # sonarr
