@@ -10,6 +10,7 @@ services:
       - /srv/transcode:/transcode
       - ${MOVIES_DIR}:/data/movies
       - ${TV_DIR}:/data/tv
+      - ${PLEX_PREROLLS_DIR}:/data/prerolls
     environment:
       - TZ=Europe/London
     network_mode: host
