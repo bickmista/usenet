@@ -6,9 +6,10 @@ services:
     image: plexinc/pms-docker:plexpass
     container_name: plex
     volumes:
-      - /srv/config/plex:/config
+      - ${CONFIG_DIR}/plex:/config
       - /srv/transcode:/transcode
-      - /srv/media:/data
+      - ${MOVIES_DIR}:/data/movies
+      - ${TV_DIR}:/data/tv
     environment:
       - TZ=Europe/London
     network_mode: host
@@ -21,9 +22,9 @@ services:
     image: linuxserver/tautulli
     container_name: tautulli
     volumes:
-      - /srv/config/plexpy:/config
+      - ${CONFIG_DIR}/plexpy:/config
+      - ${CONFIG_DIR}/plex/Library/Application Support/Plex Media Server/Logs:/logs:ro
       - /etc/localtime:/etc/localtime:ro
-      - /srv/config/plex/Library/Application Support/Plex Media Server/Logs:/logs:ro
     environment:
       - PUID=1000
       - PGID=1000
@@ -36,7 +37,7 @@ services:
     image: linuxserver/ombi
     container_name: ombi
     volumes:
-      - /srv/config/ombi:/config
+      - ${CONFIG_DIR}/ombi:/config
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=1000
@@ -52,9 +53,9 @@ services:
     image: linuxserver/nzbget
     container_name: nzbget
     volumes:
-      - /srv/config/nzbget:/config
-      - /srv/downloads/complete:/complete
-      - /srv/downloads:/downloads
+      - ${CONFIG_DIR}/nzbget:/config
+      - ${DOWNLOADS_DIR}/complete:/complete
+      - ${DOWNLOADS_DIR}:/downloads
     environment:
       - PUID=1000
       - PGID=1000
@@ -68,7 +69,7 @@ services:
     image: linuxserver/hydra2
     container_name: hydra
     volumes:
-      - /srv/config/hydra:/config
+      - ${CONFIG_DIR}/hydra:/config
     ports:
       - 8084:5076
     networks:
@@ -80,10 +81,10 @@ services:
     image: linuxserver/sonarr
     container_name: sonarr
     volumes:
-      - /srv/config/sonarr:/config
+      - ${CONFIG_DIR}/sonarr:/config
+      - ${DOWNLOADS_DIR}:/downloads
+      - ${TV_DIR}:/tv
       - /etc/localtime:/etc/localtime:ro
-      - /srv/media/tv:/tv
-      - /srv/downloads:/downloads
     environment:
       - PUID=1000
       - PGID=1000
@@ -99,9 +100,9 @@ services:
     image: linuxserver/radarr
     container_name: radarr
     volumes:
-      - /srv/config/radarr:/config
-      - /srv/media/movies:/movies
-      - /srv/downloads:/downloads
+      - ${CONFIG_DIR}/radarr:/config
+      - ${DOWNLOADS_DIR}:/downloads
+      - ${MOVIES_DIR}:/movies
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=1000
@@ -117,8 +118,8 @@ services:
     image: portainer/portainer
     container_name: portainer
     volumes:
+      - ${CONFIG_DIR}/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
-      - /srv/config/portainer:/data
     ports:
       - 8080:9000
     restart: unless-stopped
