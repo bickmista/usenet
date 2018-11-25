@@ -7,7 +7,7 @@ services:
     container_name: plex
     volumes:
       - ${CONFIG_DIR}/plex:/config
-      - /srv/transcode:/transcode
+      - ${PLEX_TRANSCODE_DIR}:/transcode
       - ${MOVIES_DIR}:/data/movies
       - ${TV_DIR}:/data/tv
       - ${PLEX_PREROLLS_DIR}:/data/prerolls
