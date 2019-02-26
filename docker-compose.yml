@@ -132,8 +132,6 @@ services:
     volumes:
       - ${CONFIG_DIR}/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 8080:9000
     restart: unless-stopped
 
   watchtower:
