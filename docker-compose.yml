@@ -52,8 +52,6 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-    networks:
-      - downloaders
     labels:
       - "traefik.frontend.rule=Host:ombi.${LOCAL_DOMAIN}"
     restart: unless-stopped
@@ -69,8 +67,6 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-    networks:
-      - downloaders
     labels:
       - "traefik.frontend.rule=Host:nzbget.${LOCAL_DOMAIN}"
     restart: unless-stopped
@@ -80,8 +76,6 @@ services:
     container_name: hydra
     volumes:
       - ${CONFIG_DIR}/hydra:/config
-    ports:
-      - 8084:5076
     labels:
       - "traefik.frontend.rule=Host:nzbhydra.${LOCAL_DOMAIN}"
     restart: unless-stopped
@@ -98,8 +92,6 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-    networks:
-      - downloaders
     labels:
       - "traefik.frontend.rule=Host:sonarr.${LOCAL_DOMAIN}"
     cpus: 0.5
@@ -117,8 +109,6 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-    networks:
-      - downloaders
     labels:
       - "traefik.frontend.rule=Host:radarr.${LOCAL_DOMAIN}"
     cpus: 0.5
@@ -138,6 +128,3 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --cleanup --schedule "15 */12 * * * *"
     restart: unless-stopped
-
-networks:
-  downloaders:
