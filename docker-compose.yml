@@ -1,6 +1,15 @@
 version: "2.3"
 
 services:
+  reverse-proxy:
+    image: traefik
+    command: --api --docker
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   # plex media server
   plex:
     image: plexinc/pms-docker:plexpass
@@ -31,6 +40,8 @@ services:
       - PGID=1000
     ports:
       - 8081:8181
+    labels:
+      - "traefik.frontend.rule=Host:tautulli.${LOCAL_DOMAIN}"
     restart: unless-stopped
 
   # ombi
