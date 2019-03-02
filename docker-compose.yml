@@ -126,5 +126,5 @@ services:
     image: v2tec/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --cleanup --schedule "15 */12 * * * *"
+    command: --cleanup --schedule "* 15 */12 * * *"
     restart: unless-stopped
