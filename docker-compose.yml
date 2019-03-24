@@ -114,6 +114,23 @@ services:
     cpus: 0.5
     restart: unless-stopped
 
+  # lidarr
+  liddarr:
+    image: linuxserver/lidarr
+    container_name: lidarr
+    volumes:
+      - ${CONFIG_DIR}/lidarr:/config
+      - ${DOWNLOADS_DIR}:/downloads
+      - ${MOVIES_DIR}:/music
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - PUID=1000
+      - PGID=1000
+    labels:
+      - "traefik.frontend.rule=Host:lidarr.${LOCAL_DOMAIN}"
+    cpus: 0.5
+    restart: unless-stopped
+
   portainer:
     image: portainer/portainer
     container_name: portainer
