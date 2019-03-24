@@ -121,7 +121,7 @@ services:
     volumes:
       - ${CONFIG_DIR}/lidarr:/config
       - ${DOWNLOADS_DIR}:/downloads
-      - ${MOVIES_DIR}:/music
+      - ${MUSIC_DIR}:/music
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=1000
@@ -138,7 +138,7 @@ services:
     volumes:
       - ${CONFIG_DIR}/mylar:/config
       - ${DOWNLOADS_DIR}:/downloads
-      - ${MOVIES_DIR}:/comics
+      - ${COMICS_DIR}:/comics
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=1000
