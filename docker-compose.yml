@@ -1,25 +1,44 @@
-version: "2.3"
+version: '2.3'
 
 services:
-  reverse-proxy:
-    image: traefik
-    command: --api --docker
+  # traefik
+  traefik:
+    image: traefik:latest
+    command: --web --docker --docker.watch --docker.domain=${DOMAIN} --docker.exposedbydefault=false --acme.domains=${DOMAIN}
+    container_name: traefik
+    hostname: traefik
     ports:
-      - 80:80
-      - 8080:8080
+      - "80:80"
+      - "443:443"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${CONFIG}/traefik/acme.json:/acme.json
+      - ${CONFIG}/traefik/traefik.toml:/etc/traefik/traefik.toml
+      - ${CONFIG}/traefik/.htpasswd:/etc/traefik/.htpasswd:ro
+    labels:
+      traefik.enable: "true"
+      traefik.frontend.rule: "Host:monitor.${DOMAIN}"
+      traefik.port: "8080"
+      com.centurylinklabs.watchtower.enable: "true"
+  
+  # ddclient
+  ddclient:
+    image: linuxserver/ddclient
+    container_name: ddclient
+    volumes:
+      - ${CONFIG}/ddclient:/config
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    restart: unless-stopped
 
   # plex media server
   plex:
     image: plexinc/pms-docker:plexpass
     container_name: plex
     volumes:
-      - ${CONFIG_DIR}/plex:/config
-      - ${PLEX_TRANSCODE_DIR}:/transcode
-      - ${MOVIES_DIR}:/data/movies
-      - ${TV_DIR}:/data/tv
-      - ${PLEX_PREROLLS_DIR}:/data/prerolls
+      - /srv/config/plex:/config
+      - /srv/transcode:/transcode
+      - /srv/media:/data
     environment:
       - TZ=Europe/London
     network_mode: host
@@ -27,19 +46,19 @@ services:
       - /dev/dri:/dev/dri
     restart: unless-stopped
 
-  # tautulli
-  tautulli:
-    image: linuxserver/tautulli
-    container_name: tautulli
+  # plexpy
+  plexpy:
+    image: linuxserver/plexpy
+    container_name: plexpy
     volumes:
-      - ${CONFIG_DIR}/plexpy:/config
-      - ${CONFIG_DIR}/plex/Library/Application Support/Plex Media Server/Logs:/logs:ro
+      - /srv/config/plexpy:/config
       - /etc/localtime:/etc/localtime:ro
+      - /srv/config/plex/Library/Application Support/Plex Media Server/Logs:/logs:ro
     environment:
       - PUID=1000
       - PGID=1000
-    labels:
-      - "traefik.frontend.rule=Host:tautulli.${LOCAL_DOMAIN}"
+    ports:
+      - 8081:8181
     restart: unless-stopped
 
   # ombi
@@ -47,54 +66,68 @@ services:
     image: linuxserver/ombi
     container_name: ombi
     volumes:
-      - ${CONFIG_DIR}/ombi:/config
+      - /srv/config/ombi:/config
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=1000
       - PGID=1000
-    labels:
-      - "traefik.frontend.rule=Host:ombi.${LOCAL_DOMAIN}"
+    networks:
+      - downloaders
+    ports:
+      - 8082:3579
     restart: unless-stopped
 
   # nzbget
   nzbget:
     image: linuxserver/nzbget
     container_name: nzbget
+    hostname: nzbget
     volumes:
-      - ${CONFIG_DIR}/nzbget:/config
-      - ${DOWNLOADS_DIR}/complete:/complete
-      - ${DOWNLOADS_DIR}:/downloads
+      - /srv/config/nzbget:/config
+      - /srv/downloads/complete:/complete
+      - /srv/downloads:/downloads
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PGID
+      - PUID
+      - TZ
+    networks:
+      - downloaders
+    ports:
+      - 8083:6789
     labels:
-      - "traefik.frontend.rule=Host:nzbget.${LOCAL_DOMAIN}"
-    restart: unless-stopped
-
-  hydra:
-    image: linuxserver/hydra2
-    container_name: hydra
-    volumes:
-      - ${CONFIG_DIR}/hydra:/config
-    labels:
-      - "traefik.frontend.rule=Host:nzbhydra.${LOCAL_DOMAIN}"
+      traefik.enable: "true"
+      traefik.port: "6789"
+      traefik.frontend.rule: "Host:nzbget.${DOMAIN}"
+      com.centurylinklabs.watchtower.enable: "true"
     restart: unless-stopped
 
   # sonarr
   sonarr:
     image: linuxserver/sonarr
     container_name: sonarr
+    hostname: sonarr
     volumes:
-      - ${CONFIG_DIR}/sonarr:/config
-      - ${DOWNLOADS_DIR}:/downloads
-      - ${TV_DIR}:/tv
+      - /srv/config/sonarr:/config
       - /etc/localtime:/etc/localtime:ro
+      - /srv/media/tv:/tv
+      - /srv/media/kids:/kids
+      - /srv/media/anime:/anime
+      - /srv/downloads:/downloads
     environment:
-      - PUID=1000
-      - PGID=1000
-    labels:
-      - "traefik.frontend.rule=Host:sonarr.${LOCAL_DOMAIN}"
+      - PGID
+      - PUID
+      - TZ
+    networks:
+      - downloaders
+    ports:
+      - 8084:8989
     cpus: 0.5
+    labels:
+      traefik.enable: "true"
+      traefik.port: "8989"
+      traefik.frontend.rule: "Host:sonarr.${DOMAIN}"
+      com.centurylinklabs.watchtower.enable: "true"
+
     restart: unless-stopped
 
   # radarr
@@ -102,15 +135,17 @@ services:
     image: linuxserver/radarr
     container_name: radarr
     volumes:
-      - ${CONFIG_DIR}/radarr:/config
-      - ${DOWNLOADS_DIR}:/downloads
-      - ${MOVIES_DIR}:/movies
+      - /srv/config/radarr:/config
+      - /srv/media/movies:/movies
+      - /srv/downloads:/downloads
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=1000
       - PGID=1000
-    labels:
-      - "traefik.frontend.rule=Host:radarr.${LOCAL_DOMAIN}"
+    networks:
+      - downloaders
+    ports:
+      - 8085:7878
     cpus: 0.5
     restart: unless-stopped
 
@@ -118,13 +153,21 @@ services:
     image: portainer/portainer
     container_name: portainer
     volumes:
-      - ${CONFIG_DIR}/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
+      - /srv/config/portainer:/data
+    ports:
+      - 8080:9000
     restart: unless-stopped
 
   watchtower:
     image: v2tec/watchtower
+    container_name: watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --cleanup --schedule "* 15 */12 * * *"
+    command: --cleanup --label-enable --schedule="0 2 * * *"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
     restart: unless-stopped
+
+networks:
+  downloaders:
