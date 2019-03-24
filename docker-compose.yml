@@ -131,6 +131,23 @@ services:
     cpus: 0.5
     restart: unless-stopped
 
+  # mylar
+  mylar:
+    image: linuxserver/mylar
+    container_name: mylar
+    volumes:
+      - ${CONFIG_DIR}/mylar:/config
+      - ${DOWNLOADS_DIR}:/downloads
+      - ${MOVIES_DIR}:/comics
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - PUID=1000
+      - PGID=1000
+    labels:
+      - "traefik.frontend.rule=Host:mylar.${LOCAL_DOMAIN}"
+    cpus: 0.5
+    restart: unless-stopped
+
   portainer:
     image: portainer/portainer
     container_name: portainer
