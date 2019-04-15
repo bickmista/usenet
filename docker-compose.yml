@@ -82,7 +82,7 @@ services:
 
   # sonarr
   sonarr:
-    image: linuxserver/sonarr
+    image: linuxserver/sonarr:preview
     container_name: sonarr
     volumes:
       - ${CONFIG_DIR}/sonarr:/config
