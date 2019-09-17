@@ -55,7 +55,7 @@ services:
       - PGID=1000
     labels:
       - "traefik.http.routers.ombi.rule=Host(`ombi.${LOCAL_DOMAIN}`)"
-      - "traefik.http.routers.ombi-public.rule=Host(`request.media.${PUBLIC_DOMAIN}`)"
+      - "traefik.http.routers.ombi.rule=Host(`request.media.${PUBLIC_DOMAIN}`)"
     restart: unless-stopped
 
   # nzbget
