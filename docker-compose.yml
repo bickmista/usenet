@@ -94,7 +94,7 @@ services:
       - PUID=1000
       - PGID=1000
     labels:
-      - "traefik.frontend.rule=Host:sonarr.${LOCAL_DOMAIN}"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.${LOCAL_DOMAIN}`)"
     cpus: 0.5
     restart: unless-stopped
 
@@ -111,7 +111,7 @@ services:
       - PUID=1000
       - PGID=1000
     labels:
-      - "traefik.frontend.rule=Host:radarr.${LOCAL_DOMAIN}"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.${LOCAL_DOMAIN}`)"
     cpus: 0.5
     restart: unless-stopped
 
