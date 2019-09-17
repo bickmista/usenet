@@ -40,7 +40,7 @@ services:
       - PUID=1000
       - PGID=1000
     labels:
-      - "traefik.frontend.rule=Host:tautulli.${LOCAL_DOMAIN}"
+      - "traefik.http.routers.tautulli.rule=Host(`tautulli.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
 
   # ombi
@@ -54,7 +54,8 @@ services:
       - PUID=1000
       - PGID=1000
     labels:
-      - "traefik.frontend.rule=Host:ombi.${LOCAL_DOMAIN}"
+      - "traefik.http.routers.ombi.rule=Host(`ombi.${LOCAL_DOMAIN}`)"
+      - "traefik.http.routers.ombi.rule=Host(`request.media.${PUBLIC_DOMAIN}`)"
     restart: unless-stopped
 
   # nzbget
@@ -69,7 +70,7 @@ services:
       - PUID=1000
       - PGID=1000
     labels:
-      - "traefik.frontend.rule=Host:nzbget.${LOCAL_DOMAIN}"
+      - "traefik.http.routers.nzbget.rule=Host(`nzbget.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
 
   hydra:
@@ -78,7 +79,7 @@ services:
     volumes:
       - ${CONFIG_DIR}/hydra:/config
     labels:
-      - "traefik.frontend.rule=Host:nzbhydra.${LOCAL_DOMAIN}"
+      - "traefik.http.routers.nzbhydra.rule=Host(`nzbhydra.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
 
   # sonarr
