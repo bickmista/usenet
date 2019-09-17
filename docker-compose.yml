@@ -3,7 +3,7 @@ version: "2.3"
 services:
   reverse-proxy:
     image: traefik
-    command: --api --docker
+    command: --api.insecure=true --providers.docker
     ports:
       - 80:80
       - 8080:8080
