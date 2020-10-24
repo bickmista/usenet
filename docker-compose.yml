@@ -84,7 +84,7 @@ services:
 
   # sonarr
   sonarr:
-    image: linuxserver/sonarr:nightly
+    image: linuxserver/sonarr:preview
     container_name: sonarr
     volumes:
       - ${CONFIG_DIR}/sonarr:/config
@@ -101,7 +101,7 @@ services:
 
   # radarr
   radarr:
-    image: linuxserver/radarr:preview
+    image: linuxserver/radarr:nightly
     container_name: radarr
     volumes:
       - ${CONFIG_DIR}/radarr:/config
