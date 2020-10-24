@@ -84,7 +84,7 @@ services:
 
   # sonarr
   sonarr:
-    image: linuxserver/sonarr:preview
+    image: linuxserver/sonarr:nightly
     container_name: sonarr
     volumes:
       - ${CONFIG_DIR}/sonarr:/config
