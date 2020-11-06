@@ -18,29 +18,12 @@ services:
     volumes:
       - ${CONFIG_DIR}/plex:/config
       - ${PLEX_TRANSCODE_DIR}:/transcode
-      - ${MOVIES_DIR}:/data/movies
-      - ${TV_DIR}:/data/tv
-      - ${PLEX_PREROLLS_DIR}:/data/prerolls
+      - ${MEDIA_DIR}:/media
     environment:
       - TZ=Europe/London
     network_mode: host
     devices:
       - /dev/dri:/dev/dri
-    restart: unless-stopped
-
-  # tautulli
-  tautulli:
-    image: linuxserver/tautulli
-    container_name: tautulli
-    volumes:
-      - ${CONFIG_DIR}/plexpy:/config
-      - ${CONFIG_DIR}/plex/Library/Application Support/Plex Media Server/Logs:/logs:ro
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      - PUID=1000
-      - PGID=1000
-    labels:
-      - "traefik.http.routers.tautulli.rule=Host(`tautulli.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
 
   # ombi
@@ -64,8 +47,7 @@ services:
     container_name: nzbget
     volumes:
       - ${CONFIG_DIR}/nzbget:/config
-      - ${DOWNLOADS_DIR}/complete:/complete
-      - ${DOWNLOADS_DIR}:/downloads
+      - ${MEDIA_DIR}/downloads:/downloads
     environment:
       - PUID=1000
       - PGID=1000
@@ -88,15 +70,13 @@ services:
     container_name: sonarr
     volumes:
       - ${CONFIG_DIR}/sonarr:/config
-      - ${DOWNLOADS_DIR}:/downloads
-      - ${TV_DIR}:/tv
+      - ${MEDIA_DIR}:/media
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=1000
       - PGID=1000
     labels:
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.${LOCAL_DOMAIN}`)"
-    cpus: 0.5
     restart: unless-stopped
 
   # radarr
@@ -105,28 +85,11 @@ services:
     container_name: radarr
     volumes:
       - ${CONFIG_DIR}/radarr:/config
-      - ${DOWNLOADS_DIR}:/downloads
-      - ${MOVIES_DIR}:/movies
+      - ${MEDIA_DIR}:/media
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=1000
       - PGID=1000
     labels:
       - "traefik.http.routers.radarr.rule=Host(`radarr.${LOCAL_DOMAIN}`)"
-    cpus: 0.5
-    restart: unless-stopped
-
-  portainer:
-    image: portainer/portainer
-    container_name: portainer
-    volumes:
-      - ${CONFIG_DIR}/portainer:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
-
-  watchtower:
-    image: v2tec/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --cleanup --schedule "* 15 */12 * * *"
     restart: unless-stopped
