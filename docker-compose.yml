@@ -7,6 +7,14 @@ services:
     ports:
       - 80:80
       - 8080:8080
+    depends_on:
+      - hydra
+      - nzbget
+      - ombi
+      - plex
+      - sonarr
+      - radarr
+      - tautulli
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
