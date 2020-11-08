@@ -63,7 +63,7 @@ services:
     restart: unless-stopped
 
   hydra:
-    image: linuxserver/hydra2
+    image: linuxserver/nzbhydra2
     container_name: hydra
     volumes:
       - ${CONFIG_DIR}/hydra:/config
