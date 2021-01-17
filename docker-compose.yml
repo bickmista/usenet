@@ -1,6 +1,22 @@
 version: "2.3"
 
 services:
+  reverse-proxy:
+    image: traefik
+    command: --api.insecure=true --providers.docker
+    ports:
+      - 80:80
+      - 8080:8080
+    depends_on:
+      - hydra
+      - nzbget
+      - plex
+      - sonarr
+      - radarr
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
   # plex media server
   plex:
     image: plexinc/pms-docker:plexpass
@@ -68,3 +84,12 @@ services:
     labels:
       - "traefik.http.routers.radarr.rule=Host(`radarr.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
+
+    overseer:
+      image: sctx/overseerr
+      container_name: overseerr
+      volumes:
+        - ${CONFIG_DIR}:/app/config
+      labels:
+        - "traefik.http.routers.overseerr.rule=Host(`overseerr.${LOCAL_DOMAIN}`)"
+      restart: unless-stopped
