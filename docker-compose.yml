@@ -69,11 +69,11 @@ services:
       - "traefik.http.routers.radarr.rule=Host(`radarr.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
 
-    overseer:
-      image: sctx/overseerr
-      container_name: overseerr
-      volumes:
-        - ${CONFIG_DIR}:/app/config
-      labels:
-        - "traefik.http.routers.overseerr.rule=Host(`overseerr.${LOCAL_DOMAIN}`)"
-      restart: unless-stopped
+  overseer:
+    image: sctx/overseerr
+    container_name: overseerr
+    volumes:
+      - ${CONFIG_DIR}:/app/config
+    labels:
+      - "traefik.http.routers.overseerr.rule=Host(`overseerr.${LOCAL_DOMAIN}`)"
+    restart: unless-stopped
