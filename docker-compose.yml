@@ -33,21 +33,6 @@ services:
       - /dev/dri:/dev/dri
     restart: unless-stopped
 
-  # ombi
-  ombi:
-    image: linuxserver/ombi
-    container_name: ombi
-    volumes:
-      - ${CONFIG_DIR}/ombi:/config
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      - PUID=1000
-      - PGID=1000
-    labels:
-      - "traefik.http.routers.ombi.rule=Host(`ombi.${LOCAL_DOMAIN}`)"
-      - "traefik.http.routers.ombi-public.rule=Host(`request.${PUBLIC_DOMAIN}`)"
-    restart: unless-stopped
-
   # nzbget
   nzbget:
     image: linuxserver/nzbget
