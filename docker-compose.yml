@@ -18,7 +18,7 @@ services:
 
   # nzbget
   nzbget:
-    image: linuxserver/nzbget
+    image: ghcr.io/linuxserver/nzbget
     container_name: nzbget
     volumes:
       - ${CONFIG_DIR}/nzbget:/config
@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
 
   hydra:
-    image: linuxserver/nzbhydra2
+    image: ghcr.io/linuxserver/nzbhydra2
     container_name: hydra
     volumes:
       - ${CONFIG_DIR}/hydra:/config
@@ -41,7 +41,7 @@ services:
 
   # sonarr
   sonarr:
-    image: linuxserver/sonarr:preview
+    image: ghcr.io/linuxserver/sonarr:develop
     container_name: sonarr
     volumes:
       - ${CONFIG_DIR}/sonarr:/config
@@ -56,7 +56,7 @@ services:
 
   # radarr
   radarr:
-    image: linuxserver/radarr:nightly
+    image: ghcr.io/linuxserver/radarr:nightly
     container_name: radarr
     volumes:
       - ${CONFIG_DIR}/radarr:/config
@@ -70,7 +70,7 @@ services:
     restart: unless-stopped
 
   overseer:
-    image: sctx/overseerr
+    image: ghcr.io/sct/overseerr
     container_name: overseerr
     volumes:
       - ${CONFIG_DIR}:/app/config
