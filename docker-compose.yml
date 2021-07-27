@@ -78,7 +78,8 @@ networks:
   lan:
     name: lan
     driver: macvlan
-    driver_opts: ${PARENT_NETWORK_ADAPTER}
+    driver_opts:
+      parent: ${PARENT_NETWORK_ADAPTER}
     ipam:
       config:
         - subnet: ${IP_MASK}
