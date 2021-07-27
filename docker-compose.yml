@@ -13,7 +13,7 @@ services:
       - TZ=Europe/London
     networks:
       lan:
-        ipv4_address: ${plex_host_ip}
+        ipv4_address: ${PLEX_HOST_IP}
     devices:
       - /dev/dri:/dev/dri
     restart: unless-stopped
@@ -84,7 +84,7 @@ networks:
   lan:
     name: lan
     driver: macvlan
-    driver_opts: ${parent_network_adapter}
+    driver_opts: ${PARENT_NETWORK_ADAPTER}
     ipam:
       config:
-        - subnet: ${ip_range}
+        - subnet: ${IP_MASK}
