@@ -71,16 +71,10 @@ services:
       - "traefik.http.routers.radarr.rule=Host(`radarr.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
 
-  overseer:
-    image: ghcr.io/sct/overseerr
-    container_name: overseerr
-    volumes:
-      - ${CONFIG_DIR}:/app/config
-    labels:
-      - "traefik.http.routers.overseerr.rule=Host(`overseerr.${LOCAL_DOMAIN}`)"
-    restart: unless-stopped
-
 networks:
+  proxy:
+    external:
+      name: "${EXTERNAL_NETWORK_NAME}"
   lan:
     name: lan
     driver: macvlan
