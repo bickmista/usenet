@@ -28,6 +28,8 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+    networks:
+      proxy:
     labels:
       - "traefik.http.routers.nzbget.rule=Host(`nzbget.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
@@ -37,6 +39,8 @@ services:
     container_name: hydra
     volumes:
       - ${CONFIG_DIR}/hydra:/config
+    networks:
+      proxy:
     labels:
       - "traefik.http.routers.nzbhydra.rule=Host(`nzbhydra.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
@@ -52,6 +56,8 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+    networks:
+      proxy:
     labels:
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
@@ -67,6 +73,8 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+    networks:
+      proxy:
     labels:
       - "traefik.http.routers.radarr.rule=Host(`radarr.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
