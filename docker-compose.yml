@@ -11,7 +11,9 @@ services:
       - ${MEDIA_DIR}:/media
     environment:
       - TZ=Europe/London
-    network_mode: host
+    networks:
+      lan:
+        ipv4_address: ${plex_host_ip}
     devices:
       - /dev/dri:/dev/dri
     restart: unless-stopped
@@ -77,3 +79,12 @@ services:
     labels:
       - "traefik.http.routers.overseerr.rule=Host(`overseerr.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
+
+networks:
+  lan:
+    name: lan
+    driver: macvlan
+    driver_opts: ${parent_network_adapter}
+    ipam:
+      config:
+        - subnet: ${ip_range}
