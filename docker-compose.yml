@@ -19,6 +19,8 @@ services:
   homer:
     image: b4bz/homer:latest
     container_name: homer
+    volumes:
+      - ${CONFIG_DIR}/homer:/www/assets
     ports:
       - 8181:8080
     networks:
