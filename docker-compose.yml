@@ -32,17 +32,6 @@ services:
       - "traefik.http.routers.nzbget.rule=Host(`nzbget.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
 
-  hydra:
-    image: ghcr.io/linuxserver/nzbhydra2
-    container_name: hydra
-    volumes:
-      - ${CONFIG_DIR}/hydra:/config
-    networks:
-      proxy:
-    labels:
-      - "traefik.http.routers.nzbhydra.rule=Host(`nzbhydra.${LOCAL_DOMAIN}`)"
-    restart: unless-stopped
-
   prowlarr:
     image: ghcr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
