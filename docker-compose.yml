@@ -16,6 +16,17 @@ services:
       - /dev/dri:/dev/dri
     restart: unless-stopped
 
+  homer:
+    image: b4bz/homer:latest
+    container_name: homer
+    ports:
+      - 80:80
+    networks:
+      proxy:
+    labels:
+      - "traefik.http.routers.homer.rule=Host(`${LOCAL_DOMAIN}`)"
+    restart: unless-stopped
+
   # nzbget
   nzbget:
     image: ghcr.io/linuxserver/nzbget
