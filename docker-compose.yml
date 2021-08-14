@@ -20,7 +20,7 @@ services:
     image: b4bz/homer:latest
     container_name: homer
     ports:
-      - 8181:8181
+      - 8181:8080
     networks:
       proxy:
     labels:
