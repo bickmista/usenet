@@ -45,6 +45,19 @@ services:
       - "traefik.http.routers.nzbhydra.rule=Host(`nzbhydra.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
 
+  prowlarr:
+    image: ghcr.io/linuxserver/prowlarr
+    container_name: prowlarr
+    volumes:
+      - ${CONFIG_DIR}/prowlarr:/config
+    ports:
+      - 9696:9696
+    networks:
+      proxy:
+    labels:
+      - "traefik.http.routers.nzbhydra.rule=Host(`prowlarr.${LOCAL_DOMAIN}`)"
+    restart: unless-stopped
+
   # sonarr
   sonarr:
     image: ghcr.io/linuxserver/sonarr:develop
