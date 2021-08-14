@@ -53,7 +53,7 @@ services:
     networks:
       proxy:
     labels:
-      - "traefik.http.routers.nzbhydra.rule=Host(`prowlarr.${LOCAL_DOMAIN}`)"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.${LOCAL_DOMAIN}`)"
     restart: unless-stopped
 
   # sonarr
