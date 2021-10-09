@@ -1,85 +1,66 @@
-version: "2.3"
+version: "3.9"
 
 services:
-  # plex media server
   plex:
     image: plexinc/pms-docker:plexpass
     container_name: plex
     volumes:
-      - ${CONFIG_DIR}/plex:/config
-      - ${PLEX_TRANSCODE_DIR}:/transcode
-      - ${MEDIA_DIR}:/media
+      - ${CONFIG_DIR:?Config directory not set}/plex:/config
+      - ${MEDIA_DIR:?Media directory not set}:/media
     environment:
-      - TZ=Europe/London
+      - TZ=${TZ}
     network_mode: host
-    devices:
-      - /dev/dri:/dev/dri
     restart: unless-stopped
 
-  # nzbget
   nzbget:
     image: ghcr.io/linuxserver/nzbget
     container_name: nzbget
+    profiles: ["frontend", "nzbget"]
     volumes:
-      - ${CONFIG_DIR}/nzbget:/config
-      - ${MEDIA_DIR}/downloads:/downloads
+      - ${CONFIG_DIR:?Config directory not set}/nzbget:/config
+      - ${MEDIA_DIR:?Media directory not set}/downloads:/downloads
     environment:
-      - PUID=1000
-      - PGID=1000
-    networks:
-      proxy:
-    labels:
-      - "traefik.http.routers.nzbget.rule=Host(`nzbget.${LOCAL_DOMAIN}`)"
+      - TZ=${TZ}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
     restart: unless-stopped
 
   prowlarr:
     image: ghcr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
+    profiles: ["frontend", "prowlarr"]
     volumes:
       - ${CONFIG_DIR}/prowlarr:/config
-    ports:
-      - 9696:9696
-    networks:
-      proxy:
-    labels:
-      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.${LOCAL_DOMAIN}`)"
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
     restart: unless-stopped
 
-  # sonarr
   sonarr:
     image: ghcr.io/linuxserver/sonarr:develop
     container_name: sonarr
+    profiles: ["frontend", "sonarr"]
     volumes:
-      - ${CONFIG_DIR}/sonarr:/config
-      - ${MEDIA_DIR}:/media
+      - ${CONFIG_DIR:?Config directory not set}/sonarr:/config
+      - ${MEDIA_DIR:?Media directory not set}:/media
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - PUID=1000
-      - PGID=1000
-    networks:
-      proxy:
-    labels:
-      - "traefik.http.routers.sonarr.rule=Host(`sonarr.${LOCAL_DOMAIN}`)"
+      - TZ=${TZ}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
     restart: unless-stopped
 
-  # radarr
   radarr:
     image: ghcr.io/linuxserver/radarr:nightly
     container_name: radarr
+    profiles: ["frontend", "radarr"]
     volumes:
-      - ${CONFIG_DIR}/radarr:/config
-      - ${MEDIA_DIR}:/media
+      - ${CONFIG_DIR:?Config directory not set}/radarr:/config
+      - ${MEDIA_DIR:?Media directory not set}:/media
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - PUID=1000
-      - PGID=1000
-    networks:
-      proxy:
-    labels:
-      - "traefik.http.routers.radarr.rule=Host(`radarr.${LOCAL_DOMAIN}`)"
+      - TZ=${TZ}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
     restart: unless-stopped
-
-networks:
-  proxy:
-    external:
-      name: "${EXTERNAL_NETWORK_NAME}"
