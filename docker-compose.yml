@@ -15,20 +15,34 @@ services:
   nzbget:
     image: ghcr.io/linuxserver/nzbget
     container_name: nzbget
-    profiles: ["frontend", "nzbget"]
+    profiles: ["usenet", "nzbget"]
     volumes:
       - ${CONFIG_DIR:?Config directory not set}/nzbget:/config
-      - ${MEDIA_DIR:?Media directory not set}/downloads:/downloads
+      - ${MEDIA_DIR:?Media directory not set}/downloads/nzbget:/downloads
     environment:
       - TZ=${TZ}
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
     restart: unless-stopped
+    
+  transmission:
+    image: linuxserver/transmission
+    container_name: transmission
+    profiles: ["torrents", "transmission"]
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    volumes:
+      - ${CONFIG_DIR:?Config directory not set}/transmission:/config
+      - ${MEDIA_DIR:?Media directory not set}/downloads/transmission:/downloads
+      - ${MEDIA_DIR:?Media directory not set}/downloads/transmission-blackhole:/watch
+    restart: unless-stopped
 
   prowlarr:
     image: ghcr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
-    profiles: ["frontend", "prowlarr"]
+    profiles: ["arrs", "prowlarr"]
     volumes:
       - ${CONFIG_DIR}/prowlarr:/config
     environment:
@@ -40,7 +54,7 @@ services:
   sonarr:
     image: ghcr.io/linuxserver/sonarr:develop
     container_name: sonarr
-    profiles: ["frontend", "sonarr"]
+    profiles: ["arrs", "sonarr"]
     volumes:
       - ${CONFIG_DIR:?Config directory not set}/sonarr:/config
       - ${MEDIA_DIR:?Media directory not set}:/media
@@ -54,7 +68,7 @@ services:
   radarr:
     image: ghcr.io/linuxserver/radarr:nightly
     container_name: radarr
-    profiles: ["frontend", "radarr"]
+    profiles: ["arrs", "radarr"]
     volumes:
       - ${CONFIG_DIR:?Config directory not set}/radarr:/config
       - ${MEDIA_DIR:?Media directory not set}:/media
