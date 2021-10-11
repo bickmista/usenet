@@ -5,10 +5,10 @@ services:
     image: plexinc/pms-docker:plexpass
     container_name: plex
     volumes:
-      - ${CONFIG_DIR:?Config directory not set}/plex:/config
-      - ${MEDIA_DIR:?Media directory not set}:/media
+      - ${CONFIG_DIR:?}/plex:/config
+      - ${MEDIA_DIR:?}:/media
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ:?}
     network_mode: host
     restart: unless-stopped
 
@@ -17,10 +17,10 @@ services:
     container_name: nzbget
     profiles: ["usenet", "nzbget"]
     volumes:
-      - ${CONFIG_DIR:?Config directory not set}/nzbget:/config
-      - ${MEDIA_DIR:?Media directory not set}/downloads/nzbget:/downloads
+      - ${CONFIG_DIR:?}/nzbget:/config
+      - ${MEDIA_DIR:?}/downloads/nzbget:/downloads
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ:?}
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
     restart: unless-stopped
@@ -30,13 +30,13 @@ services:
     container_name: transmission
     profiles: ["torrents", "transmission"]
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ:?}
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
     volumes:
-      - ${CONFIG_DIR:?Config directory not set}/transmission:/config
-      - ${MEDIA_DIR:?Media directory not set}/downloads/transmission:/downloads
-      - ${MEDIA_DIR:?Media directory not set}/downloads/transmission-blackhole:/watch
+      - ${CONFIG_DIR:?}/transmission:/config
+      - ${MEDIA_DIR:?}/downloads/transmission:/downloads
+      - ${MEDIA_DIR:?}/downloads/transmission-blackhole:/watch
     restart: unless-stopped
 
   prowlarr:
@@ -46,7 +46,7 @@ services:
     volumes:
       - ${CONFIG_DIR}/prowlarr:/config
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ:?}
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
     restart: unless-stopped
@@ -56,11 +56,11 @@ services:
     container_name: sonarr
     profiles: ["arrs", "sonarr"]
     volumes:
-      - ${CONFIG_DIR:?Config directory not set}/sonarr:/config
-      - ${MEDIA_DIR:?Media directory not set}:/media
+      - ${CONFIG_DIR:?}/sonarr:/config
+      - ${MEDIA_DIR:?}:/media
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ:?}
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
     restart: unless-stopped
@@ -70,11 +70,11 @@ services:
     container_name: radarr
     profiles: ["arrs", "radarr"]
     volumes:
-      - ${CONFIG_DIR:?Config directory not set}/radarr:/config
-      - ${MEDIA_DIR:?Media directory not set}:/media
+      - ${CONFIG_DIR:?}/radarr:/config
+      - ${MEDIA_DIR:?}:/media
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ:?}
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
     restart: unless-stopped
