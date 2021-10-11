@@ -1,0 +1,30 @@
+services:
+  nzbget:
+    labels:
+      - "traefik.http.routers.nzbget.rule=Host(`nzbget.${LOCAL_DOMAIN:?}`)"
+  transmission:
+    labels:
+      - "traefik.http.router.transmission.rule=Host(`transmission.${LOCAL_DOMAIN:?}`)"
+  prowlarr:
+    labels:
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.${LOCAL_DOMAIN:?}`)"
+  sonarr:
+    labels:
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.${LOCAL_DOMAIN:?}`)"
+  radarr:
+    labels:
+      - "traefik.http.routers.radarr.rule=Host(`radarr.${LOCAL_DOMAIN:?}`)"
+
+  traefik:
+    image: traefik
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080

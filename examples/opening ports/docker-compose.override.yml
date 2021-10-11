@@ -1,0 +1,18 @@
+services:
+  nzbget:
+    ports:
+      - 6789:6789
+  transmission:
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+  prowlarr:
+    ports:
+      - 9696:9696
+  sonarr:
+    ports:
+      - 8989:8989
+  radarr:
+    ports:
+      - 7878:7878
