@@ -12,6 +12,17 @@ services:
     network_mode: host
     restart: unless-stopped
 
+  jellyfin:
+    image: jellyfin:jellyfin
+    container_name: jellyfin
+    profiles: ["jellyfin"]
+    volumes:
+      - ${CONFIG_DIR:?}/jellyfin:/config
+      - ${MEDIA_DIR:?}:/media
+    network_mode: host
+    restart: unless-stopped
+
+
   nzbget:
     image: ghcr.io/linuxserver/nzbget
     container_name: nzbget
