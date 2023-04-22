@@ -36,6 +36,19 @@ services:
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
     restart: unless-stopped
+
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    profiles: ["usenet", "sabnzbd"]
+    volumes:
+      - ${CONFIG_DIR:?}/sabnzbd:/config
+      - ${MEDIA_DIR:?}/downloads/sabnzbd:/downloads
+    environment:
+      - TZ=${TZ:?}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    restart: unless-stopped
     
   transmission:
     image: linuxserver/transmission
